@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Simple Chat Application !!! </title>
+    <!-- Latest compiled and minified CSS -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../static/css/global.css" th:href="@{/css/global.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        h1 {
+            color:black;
+        }
+        div.scroll {
+            background-color: white;
+            overflow-x: hidden;
+            overflow-y: auto;
+            text-align:justify;
+        }
+    </style>
+
+
+    <style>
+
+
+
+        .darker {
+            border-color: #ccc;
+            background-color: #ddd;
+
+        }
+
+        .containers {
+            border: 2px solid #dedede;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .containers::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .container img {
+            float: left;
+            max-width: 60px;
+            width: 100%;
+            margin-right: 20px;
+            border-radius: 50%;
+        }
+
+        .container img.right {
+            float: right;
+            margin-left: 20px;
+            margin-right:0;
+        }
+
+        .time-right {
+            float: right;
+            color: #aaa;
+        }
+
+        .time-left {
+            float: left;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid bg">
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4" >
+            <div class="chat-screen">
+
+
+                <div th:each="chat: ${chats}" class="containers">
+
+
+                    <div th:switch="${chat.getMessageDirection()}">
+                        <p class="text-left" th:case="0" th:text="${chat.getMessage()}"/>
+                        <p class="text-right" th:case="1" th:text="${chat.getMessage()}"/>
+                    </div>
+
+                    <div th:switch="${chat.getMessageDirection()}">
+                        <span class="time-right" th:case="0" th:text="${chat.getTimestamp()}"/>
+                        <span class="time-left" th:case="1" th:text="${chat.getTimestamp()}"/>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

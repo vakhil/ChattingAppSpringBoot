@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Simple Chat Application !!! </title>
+    <!-- Latest compiled and minified CSS -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../static/css/global.css" th:href="@{/css/global.css}" rel="stylesheet" />
+
+    <link rel="stylesheet" href="global.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script>
+        var stompClient = null;
+        var socket = new SockJS('http://localhost:8080/websocket-example');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/user/queue/chats', function (greeting) {
+                showGreeting(greeting.body);
+            });
+        });
+
+
+
+
+
+        function sendName() {
+                var userNames = document.URL.split("=");
+
+            	var data = JSON.stringify({
+            		'name' : userNames[userNames.length-1],
+                    'message' : $("#messageBox").val()
+            	})
+            stompClient.send("/app/chats", {}, data);
+        }
+
+        function showGreeting(message) {
+            $("#userinfo").append("<tr><td>" + message + "</td></tr>");
+            alert(message);
+        }
+
+        $(function () {
+            $( "#send" ).click(function() { sendName(); addMessageToChat();
+                document.getElementById('messageBox').value = "";
+            });
+        });
+
+
+        function addMessageToChat() {
+            var currentTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: 'numeric' });
+
+            var d1 = document.getElementById('textArea');
+            d1.insertAdjacentHTML('beforeend', `
+                     <div class="containers">
+                     <div>
+                        <p class="text-left">` +$("#messageBox").val() +` </p>
+                        </div>
+                        <div>
+                        <span class="time-right">` +currentTime+`</span>
+                    </div>
+                    </div>
+        `);        }
+
+
+
+
+    </script>
+
+
+
+    <style>
+
+
+        .locomotive {
+            border: 2px solid #dedede;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+
+
+        .locomotive::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .locomotive img {
+            float: left;
+            max-width: 60px;
+            width: 100%;
+            margin-right: 20px;
+            border-radius: 50%;
+        }
+
+        .locomotive img.right {
+            max-width: 60px;
+
+            float: right;
+            margin-left: 20px;
+            margin-right:0;
+        }
+
+        .times-right {
+            float: right;
+            color: #aaa;
+        }
+
+        .times-left {
+            float: left;
+            color: #999;
+        }
+
+
+
+
+
+
+        .chat-footer {
+            border: 1px solid #fff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+
+        }
+        .chat-footer textarea {
+            border-radius: 60px;
+            text-align: center;
+
+            flex:6;}
+
+        .chat-footer .icons {
+            padding: 0px;
+            flex:2;}
+
+        .chat-footer .icons img{
+            width: 35px;
+        }
+
+        .chat-footer .sendButton {
+            flex:1;
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+<div class="container-fluid bg">
+    <div class="row">
+        <div class="col-md-4">
+
+
+        </div>
+        <div class="col-md-4" >
+            <div class="chat-screen" id="textArea">
+
+
+                <div th:each="chat: ${chats}" th:switch="${chat.getMessageDirection()}" >
+
+                    <div th:case="0" class="locomotive" >
+                        <img th:src="*{'data:image/png;base64,'+ chat.getUserProfilePicture()}"  alt="Avatar" style="width:100%;" />
+                        <p th:text="${chat.getMessage()}"/>
+                        <span class="times-right"  th:text="${chat.getTimestamp()}"/>
+                    </div>
+
+
+                    <div th:case="1" class="locomotive darker" >
+                        <img th:src="*{'data:image/png;base64,'+ chat.getReceiveProfilePicture()}"  alt="Avatar" class="right" style="width:100%;" />
+                        <p th:text="${chat.getMessage()}"/>
+                        <span class="times-left"  th:text="${chat.getTimestamp()}"/>
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--                <div class="containers">-->
+<!--                    <p id="userinfose" class="text-right">Hey! I'm fine. Thanks for asking!</p>-->
+<!--                    <span class="time-left">11:01</span>-->
+<!--                </div>-->
+
+
+
+
+
+
+            </div>
+            <div class="chat-footer">
+
+                <div class="icons">
+                    <img src="../static/images/attachFile.png" th:src="@{images/attachFile.png}"/>
+                    <img src="../static/images/camera.png" th:src="@{images/camera.png}"/>
+                </div>
+                <textarea id="messageBox" placeholder="Type a message"></textarea>
+                <div class="sendButton">
+                    <button type="submit" id="send" class="btn btn-success btn-block">Send</button>
+
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

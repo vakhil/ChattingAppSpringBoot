@@ -1,0 +1,7 @@
+.bg{background: url('loginBackground.jpeg') no-repeat; width: 100%; height: 100vh;}
+.form-container{border: 1px solid #fff; padding:30px 40px;margin-top: 20vh; color: #fff; font-family: "Comic Sans MS", cursive, sans-serif}
+.form-container-new-join{ margin-top: 2vh; color: #fff; font-family: "Comic Sans MS", cursive, sans-serif}
+.contacts{border: 1px solid #fff; padding:30px 40px;margin-top: 1vh; color: #fff; font-family: "Comic Sans MS", cursive, sans-serif}
+.chat-screen{                       overflow-y: auto;       height: 510px; border: 1px solid #fff; margin-top: 20vh; color: #fff; font-family: "Comic Sans MS", cursive, sans-serif}
+.text-left{width: 70%; text-align:left;}
+.text-right{text-align:right;}

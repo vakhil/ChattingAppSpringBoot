@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Simple Chat Application !!! </title>
+    <!-- Latest compiled and minified CSS -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <link href="../static/css/global.css.css" th:href="@{/css/global.css}" rel="stylesheet" />
+
+<style>
+    .profile {
+        width: 100%;
+        border: 1px solid #fff;
+        display: flex;
+        align-items: center;
+        margin-top: 1vh;
+        height: 60px;
+        padding: 0px 5px;
+        position: relative;
+    }
+
+    .profile .pp {
+        width: 40px;
+        display: inline-block;
+        border-radius: 50%;
+        margin-left: 32px;
+    }
+
+    .profile .left {
+        flex: 1;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        color: #fff;
+
+    }
+</style>
+</head>
+<body>
+
+<div class="container-fluid bg">
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4" >
+
+
+                <tr th:each="friend: ${friends}">
+                <div class="profile">
+                    <div class="left">
+                        <img th:src="*{'data:image/png;base64,'+ friend.profilePicture}"  class="pp" />
+                        <a th:href="@{/message(receive=${friend.friendName})}">
+                            <td  th:text="${friend.friendName}" /></a>
+
+                    </div>
+                </div>
+                </tr>
+
+
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
