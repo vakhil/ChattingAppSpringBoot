@@ -15,7 +15,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script>
         var stompClient = null;
-        var socket = new SockJS('http://heroku-chatapp-spring.herokuapp.com/websocket-example');
+        var socket = new SockJS('https://heroku-chatapp-spring.herokuapp.com/websocket-example');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
