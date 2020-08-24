@@ -14,22 +14,65 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script>
+//Script for getting the profile pictures
+
+    var senderProfilePicture;
+    var receiverProfilePicture;
+    var userNames = document.URL.split("=");
+
+
+var httpRequest = new XMLHttpRequest();
+
+
+        httpRequest.onreadystatechange = function () {
+            if (this.status == 200) {
+                console.log("I just reached in success status ");
+                var myArr = JSON.parse(this.responseText);
+                senderProfilePicture = myArr.sender;
+                receiverProfilePicture = myArr.receive;
+
+
+                var elemsSend = document.getElementsByClassName("send");
+                for (var i = 0; i < elemsSend.length; i+= 1) {
+                    elemsSend[i].src = 'data:image/png;base64,' + senderProfilePicture;
+                }
+
+                var elemsReceive = document.getElementsByClassName("receive");
+                for (var i = 0; i < elemsReceive.length; i+= 1) {
+                    elemsReceive[i].src = 'data:image/png;base64,' + receiverProfilePicture;
+                }
+
+
+
+            }
+        };
+console.log("I just reached before OPEN")
+
+httpRequest.open('GET', 'http://localhost:8080/profileImage?receive='+userNames[1]);
+        httpRequest.send();
+
+        console.log(userNames[1]);
+
+
+
+//Socket Io interaction !!!
+
+
         var stompClient = null;
-        var socket = new SockJS('https://heroku-chatapp-spring.herokuapp.com/websocket-example');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/user/queue/chats', function (greeting) {
-                showGreeting(greeting.body);
-            });
-        });
+                var socket = new SockJS('http://localhost:8080/websocket-example');
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function (frame) {
+                    console.log('Connected: ' + frame);
+                    stompClient.subscribe('/user/queue/chats', function (greeting) {
+                        showGreeting(greeting.body);
+                    });
+                });
 
 
 
 
 
         function sendName() {
-                var userNames = document.URL.split("=");
 
             	var data = JSON.stringify({
             		'name' : userNames[userNames.length-1],
@@ -39,8 +82,23 @@
         }
 
         function showGreeting(message) {
-            $("#userinfo").append("<tr><td>" + message + "</td></tr>");
-            alert(message);
+            var d1 = document.getElementById('chatExchange');
+            var currentTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', hour12: false
+                , minute: 'numeric' });
+
+
+
+            d1.insertAdjacentHTML('beforeend', `<div>
+                     <div class="locomotive darker">
+                     <img class="receive"  src="data:image/png;base64,` + receiverProfilePicture+`"  alt="Avatar" style="width:100%;" />
+
+                        <p class="text">` +message +` </p>
+                        <span class="times-left">` +currentTime+`</span>
+                    </div>
+                    </div>
+        `);
+
+            //alert(message);
         }
 
         $(function () {
@@ -51,19 +109,30 @@
 
 
         function addMessageToChat() {
-            var currentTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', hour12: true, minute: 'numeric' });
+            var currentTime = new Date().toLocaleTimeString('en-US', { hour: 'numeric', hour12: false
+                , minute: 'numeric' });
+            var d1 = document.getElementById('chatExchange');
 
-            var d1 = document.getElementById('textArea');
-            d1.insertAdjacentHTML('beforeend', `
-                     <div class="containers">
-                     <div>
+
+            console.log("Please try adding this x");
+            d1.insertAdjacentHTML('beforeend', `<div>
+                     <div class="locomotive">
+                     <img  src="data:image/png;base64,` + senderProfilePicture+`"  alt="Avatar" style="width:100%;" />
+
                         <p class="text-left">` +$("#messageBox").val() +` </p>
-                        </div>
-                        <div>
-                        <span class="time-right">` +currentTime+`</span>
+                        <span class="times-right">` +currentTime+`</span>
                     </div>
                     </div>
-        `);        }
+        `);
+
+
+        }
+
+
+
+
+
+
 
 
 
@@ -98,7 +167,7 @@
             border-radius: 50%;
         }
 
-        .locomotive img.right {
+        .locomotive img.receive {
             max-width: 60px;
 
             float: right;
@@ -159,24 +228,23 @@
 
         </div>
         <div class="col-md-4" >
-            <div class="chat-screen" id="textArea">
+            <div class="chat-screen" id="chatExchange">
 
 
-                <div th:each="chat: ${chats}" th:switch="${chat.getMessageDirection()}" >
+                <div th:each="chat: ${chats}" th:switch="${chat.getMessageDirection()}"  >
 
                     <div th:case="0" class="locomotive" >
-                        <img th:src="*{'data:image/png;base64,'+ chat.getUserProfilePicture()}"  alt="Avatar" style="width:100%;" />
+                        <img onload="" class="send" src=""  alt="Avatar" style="width:100%;" />
                         <p th:text="${chat.getMessage()}"/>
                         <span class="times-right"  th:text="${chat.getTimestamp()}"/>
                     </div>
 
 
                     <div th:case="1" class="locomotive darker" >
-                        <img th:src="*{'data:image/png;base64,'+ chat.getReceiveProfilePicture()}"  alt="Avatar" class="right" style="width:100%;" />
+                        <img class="receive" src=""  alt="Avatar"  style="width:100%;" />
                         <p th:text="${chat.getMessage()}"/>
                         <span class="times-left"  th:text="${chat.getTimestamp()}"/>
                     </div>
-
 
 
                 </div>
