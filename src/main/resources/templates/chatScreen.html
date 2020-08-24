@@ -48,7 +48,7 @@ var httpRequest = new XMLHttpRequest();
         };
 console.log("I just reached before OPEN")
 
-httpRequest.open('GET', 'http://localhost:8080/profileImage?receive='+userNames[1]);
+httpRequest.open('GET', 'https://heroku-chatapp-spring.herokuapp.com/profileImage?receive='+userNames[1]);
         httpRequest.send();
 
         console.log(userNames[1]);
@@ -59,7 +59,7 @@ httpRequest.open('GET', 'http://localhost:8080/profileImage?receive='+userNames[
 
 
         var stompClient = null;
-                var socket = new SockJS('http://localhost:8080/websocket-example');
+                var socket = new SockJS('https://heroku-chatapp-spring.herokuapp.com/websocket-example');
                 stompClient = Stomp.over(socket);
                 stompClient.connect({}, function (frame) {
                     console.log('Connected: ' + frame);
