@@ -59,6 +59,13 @@
                 </div>
                 </tr>
 
+            <script th:inline="javascript">
+                var message = [[${chatHistory}]];
+                localStorage.setItem("chat", message);
+
+                var MY_URL = /*[[${T(com.xyz.constants.Fruits).cheery}]]*/ "";
+            </script>
+
 
         </div>
         <div class="col-md-4">

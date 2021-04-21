@@ -26,9 +26,13 @@ public class MessageServiceImpl implements MessageService {
         List<Message> chats = messageRepository.findAllConversation(sender,receipient);
 //        List<Message> chats = messageRepository.findBySenderAndRecipient(sender,receipient);
         return chats;
-
     }
 
+    @Override
+    public List<Message> findChatsForSingleUser(String user) {
+        List<Message> chats = messageRepository.findAllMessageForUser(user);
+        return chats;
+    }
 
 
 

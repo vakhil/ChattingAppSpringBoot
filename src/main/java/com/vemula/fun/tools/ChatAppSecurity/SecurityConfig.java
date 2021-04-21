@@ -20,19 +20,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
        auth.userDetailsService(userDetailsService);
-//        auth.inMemoryAuthentication()
-//                .withUser("blah")
-//                .password("blah")
-//                .roles("ADMIN");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers(
-                "/registration**",
-                "/js/**",
-                "/css/**",
-                "/img/**").permitAll()
+        http.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
